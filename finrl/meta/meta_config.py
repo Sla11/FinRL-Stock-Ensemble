@@ -20,6 +20,7 @@ INDICATORS = [
     "dx_30",
     "close_30_sma",
     "close_60_sma",
+    "aaron"
 ]
 
 FAANG_TICKER = ["FB", "AMZN", "AAPL", "NFLX", "GOOG"]
