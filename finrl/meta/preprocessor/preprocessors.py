@@ -66,7 +66,7 @@ class FeatureEngineer:
         tech_indicator_list=config.INDICATORS,
         use_vix=False,
         use_turbulence=False,
-        user_defined_feature=False,
+        user_defined_feature=True,
     ):
         self.use_technical_indicator = use_technical_indicator
         self.tech_indicator_list = tech_indicator_list
