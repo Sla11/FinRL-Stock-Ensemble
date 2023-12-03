@@ -179,13 +179,30 @@ class FeatureEngineer:
         :return: (df) pandas dataframe
         """
         df = data.copy()
-        df["daily_return"] = df.close.pct_change(1)
+        df['mom_s1'] = self.calculate_user_defined_feature(df)
+        # df["daily_return"] = df.close.pct_change(1)
         # df['return_lag_1']=df.close.pct_change(2)
         # df['return_lag_2']=df.close.pct_change(3)
-        # df['return_lag_3']=df.close.pct_change(4)
-        # df['return_lag_4']=df.close.pct_change(5)
+
         return df
 
+    def calculate_user_defined_feature(self, data):
+        df = data.copy()
+        df['typical_price'] = (df['high'] + df['low'] + df['close']) / 3
+        df['price_diff'] = df['typical_price'].diff().abs()
+        
+        # Calculate current price difference for each row
+        df['current_price_diff'] = df['typical_price'].diff().abs()
+    
+        # Calculate the 99th percentile (0.99 quantile) for absolute difference in each rolling window
+        df['coeff_e_diff'] = df['price_diff'].rolling(window=15).apply(lambda x: x.quantile(0.99)) * 1
+    
+        # Calculate 'mom_s1' for each row, handling division by zero
+        df['mom_s1'] = df.apply(lambda row: row['current_price_diff'] / row['coeff_e_diff'] 
+                                if row['coeff_e_diff'] != 0 else None, axis=1)
+        return df['mom_s1']
+
+    
     def add_vix(self, data):
         """
         add vix from yahoo finance
