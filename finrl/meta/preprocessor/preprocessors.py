@@ -192,13 +192,13 @@ class FeatureEngineer:
         df['price_diff'] = df['typical_price'].diff().abs()
         
         # Calculate current price difference for each row
-        df['current_price_diff'] = df['typical_price'].diff().abs()
+    #    df['current_price_diff'] = df['typical_price'].diff().abs()
     
         # Calculate the 99th percentile (0.99 quantile) for absolute difference in each rolling window
-        df['coeff_e_diff'] = df['price_diff'].rolling(window=15).apply(lambda x: x.quantile(0.99)) * 1
+        df['coeff_e_diff'] = df['price_diff'].rolling(window=30).apply(lambda x: x.quantile(0.99)) * 1
     
         # Calculate 'mom_s1' for each row, handling division by zero
-        df['mom_s1'] = df.apply(lambda row: row['current_price_diff'] / row['coeff_e_diff'] 
+        df['mom_s1'] = df.apply(lambda row: row['price_diff'] / row['coeff_e_diff'] 
                                 if row['coeff_e_diff'] != 0 else None, axis=1)
         return df['mom_s1']
 
