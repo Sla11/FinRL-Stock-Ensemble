@@ -27,11 +27,11 @@ INDICATORS = [
     "dx_30",
     "close_30_sma",
     "close_60_sma",
-    "aaron",
-    'kdj',
-    'mad',
-    'trix',
-    'ftr',
+    "aroon",
+    "kdj",
+    "mad",
+    "trix",
+    "ftr"
 ]
 
 
