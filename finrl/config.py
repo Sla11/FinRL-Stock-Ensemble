@@ -33,7 +33,7 @@ INDICATORS = [
     "kdjk",
     "mad",
     "trix",
-    "ftr_28"
+    "ftr"
 ]
 
 
