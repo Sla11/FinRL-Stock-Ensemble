@@ -35,7 +35,11 @@ INDICATORS = [
     "trix",
     "ftr_20",
     "inertia",
-    "kst"
+    "kst",
+    "ppo",
+    "rsv",
+    "rvgi",
+    "tema"
 ]
 
 
