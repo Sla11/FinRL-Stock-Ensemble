@@ -34,7 +34,8 @@ INDICATORS = [
     "mad",
     "trix",
     "ftr_20",
-    "inertia"
+    "inertia",
+    "kst"
 ]
 
 
