@@ -186,22 +186,46 @@ class FeatureEngineer:
 
         return df
 
+    # def calculate_user_defined_feature(self, data):
+    #     df = data.copy()
+    #     df['typical_price'] = (df['high'] + df['low'] + df['close']) / 3
+    #     df['price_diff'] = df['typical_price'].diff().abs()
+        
+    #     # Calculate current price difference for each row
+    # #    df['current_price_diff'] = df['typical_price'].diff().abs()
+    
+    #     # Calculate the 99th percentile (0.99 quantile) for absolute difference in each rolling window
+    #     df['coeff_e_diff'] = df['price_diff'].rolling(window=90).apply(lambda x: x.quantile(0.99)) * 1
+    
+    #     # Calculate 'mom_s1' for each row, handling division by zero
+    #     df['mom_s1'] = df.apply(lambda row: row['price_diff'] / row['coeff_e_diff'] 
+    #                             if row['coeff_e_diff'] != 0 else None, axis=1)
+    #     return df['mom_s1']
+
+
     def calculate_user_defined_feature(self, data):
         df = data.copy()
+    
+        # Replace suspicious data with NaN (customize this according to your data's characteristics)
+        df[['high', 'low', 'close']] = df[['high', 'low', 'close']].replace(0, np.nan)
+        # Add any other conditions for suspicious data here
+    
+        # Forward fill to replace NaNs with the last valid observation
+        df[['high', 'low', 'close']] = df[['high', 'low', 'close']].fillna(method='ffill')
+    
+        # Calculate typical price and price difference
         df['typical_price'] = (df['high'] + df['low'] + df['close']) / 3
         df['price_diff'] = df['typical_price'].diff().abs()
-        
-        # Calculate current price difference for each row
-    #    df['current_price_diff'] = df['typical_price'].diff().abs()
     
-        # Calculate the 99th percentile (0.99 quantile) for absolute difference in each rolling window
+        # Calculate the 99th percentile (0.99 quantile) in each rolling window
         df['coeff_e_diff'] = df['price_diff'].rolling(window=90).apply(lambda x: x.quantile(0.99)) * 1
     
         # Calculate 'mom_s1' for each row, handling division by zero
-        df['mom_s1'] = df.apply(lambda row: row['price_diff'] / row['coeff_e_diff'] 
-                                if row['coeff_e_diff'] != 0 else None, axis=1)
+        df['mom_s1'] = df.apply(lambda row: row['price_diff'] / row['coeff_e_diff'] if row['coeff_e_diff'] > 0 else None, axis=1)
+    
         return df['mom_s1']
-
+    
+    
     
     def add_vix(self, data):
         """
