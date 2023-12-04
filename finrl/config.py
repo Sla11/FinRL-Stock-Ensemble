@@ -28,7 +28,9 @@ INDICATORS = [
     "close_30_sma",
     "close_60_sma",
     "aroon",
-    "kdj",
+    "kdjd",
+    "kdjj",
+    "kdjk",
     "mad",
     "trix",
     "ftr"
