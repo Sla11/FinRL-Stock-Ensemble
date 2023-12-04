@@ -33,7 +33,8 @@ INDICATORS = [
     "kdjk",
     "mad",
     "trix",
-    "ftr_20"
+    "ftr_20",
+    "inertia"
 ]
 
 
