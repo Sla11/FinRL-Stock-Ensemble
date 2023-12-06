@@ -174,16 +174,23 @@ class FeatureEngineer:
 
     def add_user_defined_feature(self, data):
         """
-         add user defined features
+        Add user defined features.
         :param data: (df) pandas dataframe
         :return: (df) pandas dataframe
         """
         df = data.copy()
-        df['mom_s1'] = self.calculate_user_defined_feature(df)
+    
+        # Calculate 'mom_s1' and its derivative
+        mom_s1_features = self.calculate_user_defined_feature(df)
+    
+        # Merge the new features into the original dataframe
+        df = df.merge(mom_s1_features, left_index=True, right_index=True)
+    
+        # Uncomment and include any other feature calculations as needed
         # df["daily_return"] = df.close.pct_change(1)
-        # df['return_lag_1']=df.close.pct_change(2)
-        # df['return_lag_2']=df.close.pct_change(3)
-
+        # df['return_lag_1'] = df.close.pct_change(2)
+        # df['return_lag_2'] = df.close.pct_change(3)
+    
         return df
 
     # def calculate_user_defined_feature(self, data):
@@ -222,8 +229,11 @@ class FeatureEngineer:
     
         # Calculate 'mom_s1' for each row, handling division by zero
         df['mom_s1'] = df.apply(lambda row: row['price_diff'] / row['coeff_e_diff'] if row['coeff_e_diff'] > 0 else None, axis=1)
+
+        # Calculate the derivative of 'mom_s1'
+        df['mom_s1_derivative'] = df['mom_s1'].diff()
     
-        return df['mom_s1']
+        return df[['mom_s1', 'mom_s1_derivative']]
     
     
     
