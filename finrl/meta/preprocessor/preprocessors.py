@@ -9,6 +9,8 @@ from stockstats import StockDataFrame as Sdf
 import talib
 
 from finrl import config
+from finrl.config import INDICATORS  # Import the INDICATORS dictionary from finrl.config
+
 from finrl.meta.preprocessor.yahoodownloader import YahooDownloader
 
 
@@ -141,29 +143,19 @@ class FeatureEngineer:
         return df
 
     def add_technical_indicator(self, data):
-        """
-        calculate technical indicators using talib
-        :param data: (DataFrame) pandas DataFrame
-        :return: (DataFrame) pandas DataFrame with added technical indicators
-        """
         df = data.copy()
         df = df.sort_values(by=["tic", "date"])
         unique_tickers = df['tic'].unique()
 
-        for indicator_name in self.tech_indicator_list:
+        for indicator_name in INDICATORS:
             indicator_df = pd.DataFrame()
             for ticker in unique_tickers:
                 ticker_data = df[df['tic'] == ticker]
-                for indicator_name in self.tech_indicator_list:
-                    if indicator_name in self.tech_indicator_list:
-                        indicator_value = self.tech_indicator_list[indicator_name](ticker_data)
-                    else:
-                        print(f"Indicator {indicator_name} is not recognized.")
-                        indicator_value = None  # or handle it in another appropriate way
-
-                # Add more conditions for other indicators
-                # elif indicator_name == "OTHER_INDICATOR":
-                #     indicator_value = talib.OTHER_FUNCTION(ticker_data['close'], ...)
+                if indicator_name in INDICATORS:
+                    indicator_value = INDICATORS[indicator_name](ticker_data)
+                else:
+                    print(f"Indicator {indicator_name} is not recognized.")
+                    indicator_value = None  # or handle it in another appropriate way
 
                 temp_df = pd.DataFrame({
                     'tic': ticker,
