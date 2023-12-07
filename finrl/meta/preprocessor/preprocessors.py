@@ -155,8 +155,8 @@ class FeatureEngineer:
             for ticker in unique_tickers:
                 ticker_data = df[df['tic'] == ticker]
                 for indicator_name in self.tech_indicator_list:
-                    if indicator_name in INDICATORS:
-                        indicator_value = INDICATORS[indicator_name](ticker_data)
+                    if indicator_name in self.tech_indicator_list:
+                        indicator_value = self.tech_indicator_list[indicator_name](ticker_data)
                     else:
                         print(f"Indicator {indicator_name} is not recognized.")
                         indicator_value = None  # or handle it in another appropriate way
