@@ -6,6 +6,7 @@ from multiprocessing.sharedctypes import Value
 import numpy as np
 import pandas as pd
 from stockstats import StockDataFrame as Sdf
+import talib
 
 from finrl import config
 from finrl.meta.preprocessor.yahoodownloader import YahooDownloader
@@ -82,10 +83,16 @@ class FeatureEngineer:
         # clean data
         df = self.clean_data(df)
 
-        # add technical indicators using stockstats
+        # # add technical indicators using stockstats
+        # if self.use_technical_indicator:
+        #     df = self.add_technical_indicator(df)
+        #     print("Successfully added technical indicators")
+
+        # add technical indicators using talib
         if self.use_technical_indicator:
             df = self.add_technical_indicator(df)
-            print("Successfully added technical indicators")
+            print("Successfully added technical indicators using talib")
+
 
         # add vix for multiple stock
         if self.use_vix:
@@ -135,39 +142,72 @@ class FeatureEngineer:
 
     def add_technical_indicator(self, data):
         """
-        calculate technical indicators
-        use stockstats package to add technical inidactors
-        :param data: (df) pandas dataframe
-        :return: (df) pandas dataframe
+        calculate technical indicators using talib
+        :param data: (DataFrame) pandas DataFrame
+        :return: (DataFrame) pandas DataFrame with added technical indicators
         """
         df = data.copy()
         df = df.sort_values(by=["tic", "date"])
-        stock = Sdf.retype(df.copy())
-        unique_ticker = stock.tic.unique()
+        unique_tickers = df['tic'].unique()
 
-        for indicator in self.tech_indicator_list:
+        for indicator_name in self.tech_indicator_list:
             indicator_df = pd.DataFrame()
-            for i in range(len(unique_ticker)):
-                try:
-                    temp_indicator = stock[stock.tic == unique_ticker[i]][indicator]
-                    temp_indicator = pd.DataFrame(temp_indicator)
-                    temp_indicator["tic"] = unique_ticker[i]
-                    temp_indicator["date"] = df[df.tic == unique_ticker[i]][
-                        "date"
-                    ].to_list()
-                    # indicator_df = indicator_df.append(
-                    #     temp_indicator, ignore_index=True
-                    # )
-                    indicator_df = pd.concat(
-                        [indicator_df, temp_indicator], axis=0, ignore_index=True
-                    )
-                except Exception as e:
-                    print(e)
-            df = df.merge(
-                indicator_df[["tic", "date", indicator]], on=["tic", "date"], how="left"
-            )
-        df = df.sort_values(by=["date", "tic"])
+            for ticker in unique_tickers:
+                ticker_data = df[df['tic'] == ticker]
+                if indicator_name == "SMA":
+                    indicator_value = talib.SMA(ticker_data['close'], timeperiod=20)  # Example for SMA
+                # Add more conditions for other indicators
+                # elif indicator_name == "OTHER_INDICATOR":
+                #     indicator_value = talib.OTHER_FUNCTION(ticker_data['close'], ...)
+
+                temp_df = pd.DataFrame({
+                    'tic': ticker,
+                    'date': ticker_data['date'],
+                    indicator_name: indicator_value
+                })
+                indicator_df = pd.concat([indicator_df, temp_df], ignore_index=True)
+
+            df = df.merge(indicator_df, on=['tic', 'date'], how='left')
+
+        df = df.sort_values(by=['date', 'tic'])
         return df
+
+    
+    # def add_technical_indicator(self, data):
+    #     """
+    #     calculate technical indicators
+    #     use stockstats package to add technical inidactors
+    #     :param data: (df) pandas dataframe
+    #     :return: (df) pandas dataframe
+    #     """
+    #     df = data.copy()
+    #     df = df.sort_values(by=["tic", "date"])
+    #     stock = Sdf.retype(df.copy())
+    #     unique_ticker = stock.tic.unique()
+
+    #     for indicator in self.tech_indicator_list:
+    #         indicator_df = pd.DataFrame()
+    #         for i in range(len(unique_ticker)):
+    #             try:
+    #                 temp_indicator = stock[stock.tic == unique_ticker[i]][indicator]
+    #                 temp_indicator = pd.DataFrame(temp_indicator)
+    #                 temp_indicator["tic"] = unique_ticker[i]
+    #                 temp_indicator["date"] = df[df.tic == unique_ticker[i]][
+    #                     "date"
+    #                 ].to_list()
+    #                 # indicator_df = indicator_df.append(
+    #                 #     temp_indicator, ignore_index=True
+    #                 # )
+    #                 indicator_df = pd.concat(
+    #                     [indicator_df, temp_indicator], axis=0, ignore_index=True
+    #                 )
+    #             except Exception as e:
+    #                 print(e)
+    #         df = df.merge(
+    #             indicator_df[["tic", "date", indicator]], on=["tic", "date"], how="left"
+    #         )
+    #     df = df.sort_values(by=["date", "tic"])
+    #     return df
         # df = data.set_index(['date','tic']).sort_index()
         # df = df.join(df.groupby(level=0, group_keys=False).apply(lambda x, y: Sdf.retype(x)[y], y=self.tech_indicator_list))
         # return df.reset_index()
