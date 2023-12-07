@@ -18,29 +18,59 @@ TRADE_END_DATE = "2021-12-01"
 
 # stockstats technical indicator column names
 # check https://pypi.org/project/stockstats/ for different names
-INDICATORS = [
-    "macd",
-    "boll_ub",
-    "boll_lb",
-    "rsi_30",
-    "cci_30",
-    "dx_30",
-    "close_30_sma",
-    "close_60_sma",
-    "aroon",
-    "kdjd",
-    "kdjj",
-    "kdjk",
-    "mad",
-    "trix",
-    "ftr_20",
-    "inertia",
-    "kst",
-    "ppo",
-    "rsv",
-    "rvgi",
-    "tema"
-]
+# INDICATORS = [
+#     "macd",
+#     "boll_ub",
+#     "boll_lb",
+#     "rsi_30",
+#     "cci_30",
+#     "dx_30",
+#     "close_30_sma",
+#     "close_60_sma",
+#     "aroon",
+#     "kdjd",
+#     "kdjj",
+#     "kdjk",
+#     "mad",
+#     "trix",
+#     "ftr_20",
+#     "inertia",
+#     "kst",
+#     "ppo",
+#     "rsv",
+#     "rvgi",
+#     "tema"
+# ]
+
+INDICATORS = {
+    "macd": lambda df: talib.MACD(df['close'])[0],  # MACD
+    "boll_ub": lambda df: talib.BBANDS(df['close'])[0],  # Upper Bollinger Bands
+    "boll_lb": lambda df: talib.BBANDS(df['close'])[2],  # Lower Bollinger Bands
+    "rsi_30": lambda df: talib.RSI(df['close'], timeperiod=30),
+    "cci_30": lambda df: talib.CCI(df['high'], df['low'], df['close'], timeperiod=30),
+    "dx_30": lambda df: talib.DX(df['high'], df['low'], df['close'], timeperiod=30),
+    "close_30_sma": lambda df: talib.SMA(df['close'], timeperiod=30),
+    "close_60_sma": lambda df: talib.SMA(df['close'], timeperiod=60),
+    "aroon": lambda df: talib.AROON(df['high'], df['low'])[0],  # Aroon up
+    "kdjk": lambda df: talib.STOCH(df['high'], df['low'], df['close'])[0],  # Stochastic %K
+    "kdjd": lambda df: talib.STOCH(df['high'], df['low'], df['close'])[1],  # Stochastic %D
+    "kdjj": lambda df: 3 * df['kdjk'] - 2 * df['kdjd'],  # J line not directly available in talib
+    "trix": lambda df: talib.TRIX(df['close']),
+    # Add more indicators as needed
+
+    # New indicators
+    "KAMA": lambda df: talib.KAMA(df['close']),
+    "Stochastic": lambda df: talib.STOCH(df['high'], df['low'], df['close'])[0],  # Stochastic %K
+    "AROON": lambda df: talib.AROON(df['high'], df['low'])[0],  # Aroon up
+    "UltimateOscillator": lambda df: talib.ULTOSC(df['high'], df['low'], df['close']),
+    "ADXR": lambda df: talib.ADXR(df['high'], df['low'], df['close']),
+    "WilliamsR": lambda df: talib.WILLR(df['high'], df['low'], df['close']),
+    "ROC": lambda df: talib.ROC(df['close']),
+}
+
+# To calculate an indicator:
+# df['macd'] = INDICATORS['macd'](df)
+
 
 
 # Model Parameters
