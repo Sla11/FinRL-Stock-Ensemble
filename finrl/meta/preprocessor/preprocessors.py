@@ -154,8 +154,13 @@ class FeatureEngineer:
             indicator_df = pd.DataFrame()
             for ticker in unique_tickers:
                 ticker_data = df[df['tic'] == ticker]
-                if indicator_name == "SMA":
-                    indicator_value = talib.SMA(ticker_data['close'], timeperiod=20)  # Example for SMA
+                for indicator_name in self.tech_indicator_list:
+                    if indicator_name in INDICATORS:
+                        indicator_value = INDICATORS[indicator_name](ticker_data)
+                    else:
+                        print(f"Indicator {indicator_name} is not recognized.")
+                        indicator_value = None  # or handle it in another appropriate way
+
                 # Add more conditions for other indicators
                 # elif indicator_name == "OTHER_INDICATOR":
                 #     indicator_value = talib.OTHER_FUNCTION(ticker_data['close'], ...)
