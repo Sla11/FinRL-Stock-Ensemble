@@ -66,16 +66,31 @@ class FeatureEngineer:
     def __init__(
         self,
         use_technical_indicator=True,
-        tech_indicator_list=config.INDICATORS,
+        tech_indicator_list=None,  # Set default to None
         use_vix=False,
         use_turbulence=False,
         user_defined_feature=True,
     ):
         self.use_technical_indicator = use_technical_indicator
-        self.tech_indicator_list = tech_indicator_list
+        # If a custom tech_indicator_list is provided, use it; otherwise, use the default from config
+        self.tech_indicator_list = tech_indicator_list if tech_indicator_list is not None else config.INDICATORS
         self.use_vix = use_vix
         self.use_turbulence = use_turbulence
         self.user_defined_feature = user_defined_feature
+    
+    # def __init__(
+    #     self,
+    #     use_technical_indicator=True,
+    #     tech_indicator_list=config.INDICATORS,
+    #     use_vix=False,
+    #     use_turbulence=False,
+    #     user_defined_feature=True,
+    # ):
+    #     self.use_technical_indicator = use_technical_indicator
+    #     self.tech_indicator_list = tech_indicator_list
+    #     self.use_vix = use_vix
+    #     self.use_turbulence = use_turbulence
+    #     self.user_defined_feature = user_defined_feature
 
     def preprocess_data(self, df):
         """main method to do the feature engineering
