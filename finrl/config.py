@@ -46,14 +46,14 @@ TRADE_END_DATE = "2021-12-01"
 # ]
 
 INDICATORS = {
-    # "macd": lambda df: talib.MACD(df['close'])[0],  # MACD
-    # "boll_ub": lambda df: talib.BBANDS(df['close'])[0],  # Upper Bollinger Bands
-    # "boll_lb": lambda df: talib.BBANDS(df['close'])[2],  # Lower Bollinger Bands
-    # "rsi_30": lambda df: talib.RSI(df['close'], timeperiod=30),
+    "macd": lambda df: talib.MACD(df['close'])[0],  # MACD
+    "boll_ub": lambda df: talib.BBANDS(df['close'])[0],  # Upper Bollinger Bands
+    "boll_lb": lambda df: talib.BBANDS(df['close'])[2],  # Lower Bollinger Bands
+    "rsi_30": lambda df: talib.RSI(df['close'], timeperiod=30),
     # "cci_30": lambda df: talib.CCI(df['high'], df['low'], df['close'], timeperiod=30),
     # "dx_30": lambda df: talib.DX(df['high'], df['low'], df['close'], timeperiod=30),
-    # "close_30_sma": lambda df: talib.SMA(df['close'], timeperiod=30),
-    # "close_60_sma": lambda df: talib.SMA(df['close'], timeperiod=60),
+    "close_30_sma": lambda df: talib.SMA(df['close'], timeperiod=30),
+    "close_60_sma": lambda df: talib.SMA(df['close'], timeperiod=60),
     # "aroon": lambda df: talib.AROON(df['high'], df['low'])[0],  # Aroon up
     # "kdjk": lambda df: talib.STOCH(df['high'], df['low'], df['close'])[0],  # Stochastic %K
     # "kdjd": lambda df: talib.STOCH(df['high'], df['low'], df['close'])[1],  # Stochastic %D
