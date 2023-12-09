@@ -101,7 +101,6 @@ INDICATORS = {
     # Momentum Indicators
     "rsi": lambda df: talib.RSI(df['close'], timeperiod=14),
     "stochrsi": lambda df: talib.STOCHRSI(df['close'], timeperiod=14)[0],
-    "tsi": lambda df: talib.TSI(df['close'], timeperiod1=25, timeperiod2=13),
     "uo": lambda df: talib.ULTOSC(df['high'], df['low'], df['close'], timeperiod1=7, timeperiod2=14, timeperiod3=28),
     "stoch": lambda df: talib.STOCH(df['high'], df['low'], df['close'], fastk_period=14, slowk_period=3, slowd_period=3)[0],
     "willr": lambda df: talib.WILLR(df['high'], df['low'], df['close'], timeperiod=14),
