@@ -45,35 +45,75 @@ TRADE_END_DATE = "2021-12-01"
 #     "tema"
 # ]
 
-INDICATORS = {
-    "macd": lambda df: talib.MACD(df['close'])[0],  # MACD
-    "boll_ub": lambda df: talib.BBANDS(df['close'])[0],  # Upper Bollinger Bands
-    "boll_lb": lambda df: talib.BBANDS(df['close'])[2],  # Lower Bollinger Bands
-    "rsi_30": lambda df: talib.RSI(df['close'], timeperiod=30),
-    # "cci_30": lambda df: talib.CCI(df['high'], df['low'], df['close'], timeperiod=30),
-    # "dx_30": lambda df: talib.DX(df['high'], df['low'], df['close'], timeperiod=30),
-    "close_30_sma": lambda df: talib.SMA(df['close'], timeperiod=30),
-    "close_60_sma": lambda df: talib.SMA(df['close'], timeperiod=60),
-    # "aroon": lambda df: talib.AROON(df['high'], df['low'])[0],  # Aroon up
-    # "kdjk": lambda df: talib.STOCH(df['high'], df['low'], df['close'])[0],  # Stochastic %K
-    # "kdjd": lambda df: talib.STOCH(df['high'], df['low'], df['close'])[1],  # Stochastic %D
-    # "kdjj": lambda df: 3 * df['kdjk'] - 2 * df['kdjd'],  # J line not directly available in talib
-    # "trix": lambda df: talib.TRIX(df['close']),
-    # Add more indicators as needed
+# INDICATORS = {
+#     "macd": lambda df: talib.MACD(df['close'])[0],  # MACD
+#     "boll_ub": lambda df: talib.BBANDS(df['close'])[0],  # Upper Bollinger Bands
+#     "boll_lb": lambda df: talib.BBANDS(df['close'])[2],  # Lower Bollinger Bands
+#     "rsi_30": lambda df: talib.RSI(df['close'], timeperiod=30),
+#     # "cci_30": lambda df: talib.CCI(df['high'], df['low'], df['close'], timeperiod=30),
+#     # "dx_30": lambda df: talib.DX(df['high'], df['low'], df['close'], timeperiod=30),
+#     "close_30_sma": lambda df: talib.SMA(df['close'], timeperiod=30),
+#     "close_60_sma": lambda df: talib.SMA(df['close'], timeperiod=60),
+#     # "aroon": lambda df: talib.AROON(df['high'], df['low'])[0],  # Aroon up
+#     # "kdjk": lambda df: talib.STOCH(df['high'], df['low'], df['close'])[0],  # Stochastic %K
+#     # "kdjd": lambda df: talib.STOCH(df['high'], df['low'], df['close'])[1],  # Stochastic %D
+#     # "kdjj": lambda df: 3 * df['kdjk'] - 2 * df['kdjd'],  # J line not directly available in talib
+#     # "trix": lambda df: talib.TRIX(df['close']),
+#     # Add more indicators as needed
 
-    # New indicators
-    "KAMA": lambda df: talib.KAMA(df['close']),
-    "Stochastic": lambda df: talib.STOCH(df['high'], df['low'], df['close'])[0],  # Stochastic %K
-    "AROON": lambda df: talib.AROON(df['high'], df['low'])[0],  # Aroon up
-    "UltimateOscillator": lambda df: talib.ULTOSC(df['high'], df['low'], df['close']),
-    "ADXR": lambda df: talib.ADXR(df['high'], df['low'], df['close']),
-    "WilliamsR": lambda df: talib.WILLR(df['high'], df['low'], df['close']),
-    "ROC": lambda df: talib.ROC(df['close']),
-}
+#     # New indicators
+#     "KAMA": lambda df: talib.KAMA(df['close']),
+#     "Stochastic": lambda df: talib.STOCH(df['high'], df['low'], df['close'])[0],  # Stochastic %K
+#     "AROON": lambda df: talib.AROON(df['high'], df['low'])[0],  # Aroon up
+#     "UltimateOscillator": lambda df: talib.ULTOSC(df['high'], df['low'], df['close']),
+#     "ADXR": lambda df: talib.ADXR(df['high'], df['low'], df['close']),
+#     "WilliamsR": lambda df: talib.WILLR(df['high'], df['low'], df['close']),
+#     "ROC": lambda df: talib.ROC(df['close']),
+# }
 
 # To calculate an indicator:
 # df['macd'] = INDICATORS['macd'](df)
 
+INDICATORS = {
+    # Volume Indicators
+    "mfi": lambda df: talib.MFI(df['high'], df['low'], df['close'], df['volume']),
+    "adi": lambda df: talib.AD(df['high'], df['low'], df['close'], df['volume']),
+    "obv": lambda df: talib.OBV(df['close'], df['volume']),
+    # Chaikin Money Flow (CMF), Force Index (FI), Ease of Movement (EoM, EMV), 
+    # Volume-price Trend (VPT), Negative Volume Index (NVI) might require custom implementations
+
+    # Volatility Indicators
+    "atr": lambda df: talib.ATR(df['high'], df['low'], df['close'], timeperiod=14),
+    "boll_ub": lambda df: talib.BBANDS(df['close'], timeperiod=20)[0],
+    "boll_lb": lambda df: talib.BBANDS(df['close'], timeperiod=20)[2],
+    # Keltner Channel (KC), Donchian Channel (DC), Ulcer Index (UI) might require custom implementations
+
+    # Trend Indicators
+    "sma": lambda df: talib.SMA(df['close'], timeperiod=30),
+    "ema": lambda df: talib.EMA(df['close'], timeperiod=30),
+    "wma": lambda df: talib.WMA(df['close'], timeperiod=30),
+    "macd": lambda df: talib.MACD(df['close'], fastperiod=12, slowperiod=26, signalperiod=9)[0],
+    "adx": lambda df: talib.ADX(df['high'], df['low'], df['close'], timeperiod=14),
+    # Vortex Indicator (VI), Trix (TRIX), Mass Index (MI), Commodity Channel Index (CCI), 
+    # Detrended Price Oscillator (DPO), KST Oscillator (KST), Ichimoku Kinkō Hyō (Ichimoku),
+    # Parabolic Stop And Reverse (Parabolic SAR), Schaff Trend Cycle (STC) might require custom implementations
+
+    # Momentum Indicators
+    "rsi": lambda df: talib.RSI(df['close'], timeperiod=14),
+    "stochrsi": lambda df: talib.STOCHRSI(df['close'], timeperiod=14)[0],
+    "tsi": lambda df: talib.TSI(df['close'], timeperiod1=25, timeperiod2=13),
+    "uo": lambda df: talib.ULTOSC(df['high'], df['low'], df['close'], timeperiod1=7, timeperiod2=14, timeperiod3=28),
+    "stoch": lambda df: talib.STOCH(df['high'], df['low'], df['close'], fastk_period=14, slowk_period=3, slowd_period=3)[0],
+    "willr": lambda df: talib.WILLR(df['high'], df['low'], df['close'], timeperiod=14),
+    "ao": lambda df: talib.APO(df['close'], fastperiod=5, slowperiod=34),
+    # Kaufman’s Adaptive Moving Average (KAMA), Rate of Change (ROC), Percentage Price Oscillator (PPO),
+    # Percentage Volume Oscillator (PVO) might require custom implementations
+
+    # Other Indicators
+    "daily_return": lambda df: df['close'].pct_change(),
+    "daily_log_return": lambda df: np.log(df['close'] / df['close'].shift(1)),
+    "cumulative_return": lambda df: (1 + df['close'].pct_change()).cumprod()
+}
 
 
 # Model Parameters
