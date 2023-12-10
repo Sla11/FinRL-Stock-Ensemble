@@ -77,7 +77,6 @@ TRADE_END_DATE = "2021-12-01"
 INDICATORS = {
     # Volume Indicators
     "mfi": lambda df: talib.MFI(df['high'], df['low'], df['close'], df['volume']),
-    "adi": lambda df: talib.AD(df['high'], df['low'], df['close'], df['volume']),
     "obv": lambda df: talib.OBV(df['close'], df['volume']),
     # Chaikin Money Flow (CMF), Force Index (FI), Ease of Movement (EoM, EMV), 
     # Volume-price Trend (VPT), Negative Volume Index (NVI) might require custom implementations
